@@ -1,4 +1,9 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Spin, message } from "antd";
+import { login } from "../../services/auth.service";
+import type { AxiosError } from "axios";
+import type { LoginResponse } from "../../types/auth.types";
 
 interface LoginFormInputs {
   username: string;
@@ -12,12 +17,32 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log("Form data:", data);
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async (data: LoginFormInputs) => {
+    setLoading(true);
+    try {
+      const response = await login(data);
+      const dataResponse: LoginResponse = response.data;
+      console.log("Thông tin người dùng: ", dataResponse.user);
+      console.log("Token: ", dataResponse.token);
+      message.success("Đăng nhập thành công!");
+
+    } catch (e) {
+      const error = e as AxiosError<{ message: string }>;
+      message.error(error.response?.data.message || "Đã có lỗi khi đăng nhập, hãy thử lại");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-[80vh]">
+      {loading && (
+        <div className="absolute inset-0 flex justify-center items-center bg-white/60 z-50">
+          <Spin size="large" tip="Đang xử lý..." />
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white shadow-md rounded-xl p-8 w-full max-w-md border"
