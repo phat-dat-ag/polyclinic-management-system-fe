@@ -10,6 +10,13 @@ import AboutPage from "../modules/information/AboutPage";
 import ServicesPage from "../modules/information/ServicePage";
 import LoginPage from "../modules/auth/LoginPage";
 import RegisterPage from "../modules/auth/RegisterPage";
+import { UserHome } from "../modules/home/UserHome";
+import { DoctorHome } from "../modules/home/DoctorHome";
+import DoctorAppointment from "../modules/appointment/DoctorAppointment";
+import UserAppointment from "../modules/appointment/UserAppointment";
+import DoctorSchedule from "../modules/schedule/DoctorSchedule";
+import UserProfile from "../modules/profile/UserProfile";
+import { AdminHome } from "../modules/home/AdminHome";
 
 const AppRouter = () => {
     return (
@@ -23,32 +30,45 @@ const AppRouter = () => {
             </Route>
 
             <Route
+                path="/user"
                 element={
                     <ProtectedRoute allowedRoles={["user"]}>
                         <UserLayout />
                     </ProtectedRoute>
                 }
             >
+                <Route index element={<UserHome />} />
+                <Route path="about" element={<AboutPage />} />
+                <Route path="services" element={<ServicesPage />} />
+                <Route path="appointment" element={<UserAppointment />} />
+                <Route path="profile" element={<UserProfile />} />
             </Route>
 
             <Route
+                path="/admin"
                 element={
                     <ProtectedRoute allowedRoles={["admin"]}>
                         <AdminLayout />
                     </ProtectedRoute>
                 }
             >
+                <Route index element={<AdminHome />} />
 
             </Route>
 
             <Route
+                path="/doctor"
                 element={
                     <ProtectedRoute allowedRoles={["doctor"]}>
                         <DoctorLayout />
                     </ProtectedRoute>
                 }
             >
-
+                <Route index element={<DoctorHome />} />
+                <Route path="about" element={<AboutPage />} />
+                <Route path="services" element={<ServicesPage />} />
+                <Route path="appointment" element={<DoctorAppointment />} />
+                <Route path="schedule" element={<DoctorSchedule />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/" />} />

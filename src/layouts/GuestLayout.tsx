@@ -6,11 +6,9 @@ const GuestLayout = () => {
     return (
         <div className="flex flex-col min-h-screen">
             <GuestHeader />
-
-            <main className="w-[80%] mx-auto">
+            <main className="w-[80%] my-4 mx-auto">
                 <Outlet />
             </main>
-
             <Footer />
         </div>
     );

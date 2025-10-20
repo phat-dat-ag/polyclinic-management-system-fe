@@ -1,4 +1,5 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 interface ProtectedRouteProps {
     allowedRoles: string[];
@@ -6,18 +7,17 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
+    const { user } = useAuth();
 
-    if (!token) {
+    if (!user) {
         return <Navigate to="/login" replace />;
     }
 
-    if (!allowedRoles.includes(role || "")) {
+    if (!allowedRoles.includes(user.role)) {
         return <Navigate to="/" replace />;
     }
 
-    return children ? <>{children}</> : <Outlet />;
+    return children;
 };
 
 export default ProtectedRoute;

@@ -4,6 +4,7 @@ import { Spin, message } from "antd";
 import { login } from "../../services/auth.service";
 import type { AxiosError } from "axios";
 import type { LoginResponse } from "../../types/auth.types";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormInputs {
   username: string;
@@ -18,15 +19,28 @@ const LoginPage = () => {
   } = useForm<LoginFormInputs>();
 
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormInputs) => {
     setLoading(true);
     try {
       const response = await login(data);
       const dataResponse: LoginResponse = response.data;
-      console.log("Thông tin người dùng: ", dataResponse.user);
-      console.log("Token: ", dataResponse.token);
-      message.success("Đăng nhập thành công!");
+
+      localStorage.setItem("token", dataResponse.token);
+      localStorage.setItem("user", JSON.stringify(dataResponse.user));
+
+      switch (dataResponse.user.role) {
+        case "admin":
+          navigate("/admin", { replace: true });
+          break;
+        case "doctor":
+          navigate("/doctor", { replace: true });
+          break;
+        default:
+          navigate("/user", { replace: true });
+          break;
+      }
 
     } catch (e) {
       const error = e as AxiosError<{ message: string }>;
@@ -37,7 +51,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh]">
+    <div className="flex justify-center items-center">
       {loading && (
         <div className="absolute inset-0 flex justify-center items-center bg-white/60 z-50">
           <Spin size="large" tip="Đang xử lý..." />
