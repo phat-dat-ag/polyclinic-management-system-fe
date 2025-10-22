@@ -17,6 +17,9 @@ import UserAppointment from "../modules/appointment/UserAppointment";
 import DoctorSchedule from "../modules/schedule/DoctorSchedule";
 import UserProfile from "../modules/profile/UserProfile";
 import { AdminHome } from "../modules/home/AdminHome";
+import PatientManagementPage from "../modules/patient/PatientManagementPage";
+import AddPatientPage from "../modules/patient/AddPatientPage";
+import EditPatientPage from "../modules/patient/EditPatientPage";
 
 const AppRouter = () => {
     return (
@@ -67,6 +70,9 @@ const AppRouter = () => {
                 <Route index element={<DoctorHome />} />
                 <Route path="about" element={<AboutPage />} />
                 <Route path="services" element={<ServicesPage />} />
+                <Route path="patient-management" element={<PatientManagementPage />} />
+                <Route path="patient-management/add" element={<AddPatientPage />} />
+                <Route path="patient-management/edit/:id" element={<EditPatientPage />} />
                 <Route path="appointment" element={<DoctorAppointment />} />
                 <Route path="schedule" element={<DoctorSchedule />} />
             </Route>

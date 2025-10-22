@@ -15,6 +15,7 @@ const DoctorHeader = () => {
         { path: "/doctor", label: "Trang Chủ" },
         { path: "/doctor/about", label: "Giới Thiệu" },
         { path: "/doctor/services", label: "Dịch Vụ" },
+        { path: "/doctor/patient-management", label: "Bệnh nhân" },
         { path: "/doctor/appointment", label: "Xem lịch hẹn" },
         { path: "/doctor/schedule", label: "Xem lịch trực" },
     ];
