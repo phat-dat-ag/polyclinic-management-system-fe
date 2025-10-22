@@ -54,7 +54,7 @@ const LoginPage = () => {
     <div className="flex justify-center items-center">
       {loading && (
         <div className="absolute inset-0 flex justify-center items-center bg-white/60 z-50">
-          <Spin size="large" tip="Đang xử lý..." />
+          <Spin fullscreen tip="Đang đăng nhập..." />
         </div>
       )}
       <form
