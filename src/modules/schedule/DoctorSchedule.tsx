@@ -1,3 +1,4 @@
+// DoctorSchedule.tsx
 import { useEffect, useState } from "react";
 import { Button, message, Spin } from "antd";
 import AddScheduleModal, { type ScheduleForm } from "./components/AddScheduleModal";
@@ -10,6 +11,8 @@ import ScheduleTable from "./components/ScheduleTable";
 
 const DoctorSchedule = () => {
     const [open, setOpen] = useState(false);
+    const [mode, setMode] = useState<"create" | "view" | "edit">("create");
+    const [selected, setSelected] = useState<DoctorScheduleItem | null>(null);
     const [loading, setLoading] = useState(false);
     const [schedules, setSchedules] = useState<DoctorScheduleItem[]>([]);
 
@@ -19,7 +22,7 @@ const DoctorSchedule = () => {
             const userString = localStorage.getItem("user");
             const user: User | null = userString ? JSON.parse(userString) : null;
             if (!user) {
-                message.error("Lỗi lấy lịch hẹn cho bác sĩ: Không thấy tài khoản bác sĩ");
+                message.error("Không tìm thấy tài khoản bác sĩ");
                 return;
             }
             const response = await getSchedule({ doctor: user._id });
@@ -35,7 +38,7 @@ const DoctorSchedule = () => {
 
     useEffect(() => {
         loadSchedule();
-    }, [])
+    }, []);
 
     const handleSubmit = async (formValues: ScheduleForm) => {
         setLoading(true);
@@ -43,7 +46,7 @@ const DoctorSchedule = () => {
             const userString = localStorage.getItem("user");
             const user: User | null = userString ? JSON.parse(userString) : null;
             if (!user) {
-                message.error("Lỗi thêm lịch hẹn: Không thấy tài khoản bác sĩ");
+                message.error("Không tìm thấy tài khoản bác sĩ");
                 return;
             }
             const payload: CreateScheduleRequest = {
@@ -53,10 +56,8 @@ const DoctorSchedule = () => {
                 shiftType: formValues.shiftType as ShiftType,
                 timeSlots: formValues.timeSlots,
             };
-
             await addSchedule(payload);
             await loadSchedule();
-
             setOpen(false);
         } catch (e) {
             const error = e as AxiosError<{ message: string }>;
@@ -75,17 +76,39 @@ const DoctorSchedule = () => {
             )}
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Quản lý lịch trực</h2>
-                <Button type="primary" onClick={() => setOpen(true)}>
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        setMode("create");
+                        setSelected(null);
+                        setOpen(true);
+                    }}
+                >
                     Thêm lịch trực
                 </Button>
             </div>
 
-            <ScheduleTable schedules={schedules} loading={loading} />
+            <ScheduleTable
+                schedules={schedules}
+                loading={loading}
+                onView={(record) => {
+                    setSelected(record);
+                    setMode("view");
+                    setOpen(true);
+                }}
+                onEdit={(record) => {
+                    setSelected(record);
+                    setMode("edit");
+                    setOpen(true);
+                }}
+            />
 
             <AddScheduleModal
                 open={open}
                 onClose={() => setOpen(false)}
                 onSubmit={handleSubmit}
+                mode={mode}
+                scheduleData={selected}
             />
         </div>
     );

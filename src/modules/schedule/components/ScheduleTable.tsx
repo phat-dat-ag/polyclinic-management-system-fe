@@ -1,4 +1,4 @@
-import { Table, Tag, Tooltip } from "antd";
+import { Table, Tag, Tooltip, Button, Space } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { DoctorScheduleItem, TimeSlot } from "../../../types/schedule.types";
 import dayjs from "dayjs";
@@ -7,12 +7,16 @@ interface ScheduleTableProps {
     schedules: DoctorScheduleItem[];
     loading?: boolean;
     isAdminView?: boolean;
+    onView?: (record: DoctorScheduleItem) => void;
+    onEdit?: (record: DoctorScheduleItem) => void;
 }
 
 const ScheduleTable = ({
     schedules,
     loading,
     isAdminView = false,
+    onView,
+    onEdit,
 }: ScheduleTableProps) => {
     const columns: ColumnsType<DoctorScheduleItem> = [
         ...(isAdminView
@@ -21,10 +25,7 @@ const ScheduleTable = ({
                     title: "Bác sĩ",
                     dataIndex: ["doctor", "fullName"],
                     key: "doctor",
-                    render: (
-                        text: string,
-                        record: DoctorScheduleItem
-                    ) => (
+                    render: (text: string, record: DoctorScheduleItem) => (
                         <Tooltip title={`Email: ${record.doctor.email}`}>
                             <span className="font-medium">{text}</span>
                         </Tooltip>
@@ -32,7 +33,6 @@ const ScheduleTable = ({
                 },
             ]
             : []),
-
         {
             title: "Khoa",
             dataIndex: "department",
@@ -89,10 +89,18 @@ const ScheduleTable = ({
             },
         },
         {
-            title: "Ngày tạo",
-            dataIndex: "createdAt",
-            key: "createdAt",
-            render: (value: string) => dayjs(value).format("HH:mm DD/MM/YYYY"),
+            title: "Hành động",
+            key: "actions",
+            render: (_, record) => (
+                <Space>
+                    <Button size="small" onClick={() => onView?.(record)}>
+                        Xem
+                    </Button>
+                    <Button size="small" type="primary" onClick={() => onEdit?.(record)}>
+                        Sửa
+                    </Button>
+                </Space>
+            ),
         },
     ];
 
