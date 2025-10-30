@@ -7,6 +7,7 @@ const GuestHeader = () => {
     { path: "/", label: "Trang Chủ" },
     { path: "/about", label: "Giới Thiệu" },
     { path: "/services", label: "Dịch Vụ" },
+    { path: "/user/appointment", label: "Đăng Ký Khám" },
     { path: "/login", label: "Đăng Nhập" },
     { path: "/register", label: "Đăng Ký" },
   ];
